@@ -24,8 +24,8 @@ exports.register = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000, // 1 hour in milliseconds
+      sameSite: "none",
+      maxAge: 15 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
@@ -62,8 +62,8 @@ exports.login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000, // 1 hour in milliseconds
+      sameSite: "none",
+      maxAge: 15 * 24 * 60 * 60 * 1000,
     });
 
     res.status(201).json({
@@ -80,15 +80,4 @@ exports.login = async (req, res) => {
 exports.logout = (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logged out successfully" });
-};
-
-// Get current user
-exports.getMe = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select("-password");
-    res.json(user);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server error");
-  }
 };
